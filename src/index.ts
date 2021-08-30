@@ -2,6 +2,7 @@ import fs from "fs";
 import repl from "repl";
 import Scanner from "./scanner";
 import errors from "./errors";
+import Parser from "./parser";
 
 main(process.argv.slice(2));
 
@@ -41,8 +42,12 @@ function runPrompt() {
 function run(source: string) {
   const scanner = new Scanner(source);
   const tokens = scanner.scanTokens();
+  const parser = new Parser(tokens);
+  const expression = parser.parse();
 
-  for (const token of tokens) {
-    console.log(token);
+  if (errors.hadError) {
+    return;
   }
+
+  console.log(expression);
 }
